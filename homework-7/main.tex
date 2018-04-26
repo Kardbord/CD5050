@@ -1,0 +1,154 @@
+% latex first.tex
+% latex first.tex
+% xdvi first.dvi
+% dvips -o first.ps first.dvi
+% gv first.ps
+% lpr first.ps
+% pdflatex first.tex
+% acroread first.pdf
+% dvipdf first.dvi first.pdf
+% xpdf first.pdf
+\documentclass[11pt]{article}
+
+\usepackage{latexsym}
+%\newcommand{\epsfig}{\psfig}
+%\usepackage{tabularx,booktabs,multirow,delarray,array}
+%\usepackage{graphicx,amssymb,amsmath,amssymb,mathrsfs}
+%\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[linesnumbered, vlined, ruled]{algorithm2e}
+
+
+%\usepackage[T1]{fontenc}
+
+
+%\aboverulesep=0pt
+%\belowrulesep=0pt
+
+%\marginparwidth=0in
+%\marginparsep=0in
+\oddsidemargin=0.0in
+\evensidemargin=0.0in
+\headheight=0.0in
+%\headsep=0in
+\topmargin=-0.40in %0.35
+\textheight=9.0in %9.1in
+\textwidth=6.5in   %6.55in
+
+\usepackage{fullpage}
+
+%\setlength{\headheight}{0.2in}
+%\setlength{\headsep}{0.2in}
+%\setlength{\voffset}{-0.2in}
+
+\def\report{{\em Report-Max}$(1)$}
+\def\reportk{{\em Report-Max}$(k)$}
+
+%\pagestyle{plain}
+
+%\usepackage{listings}
+%\lstloadlanguages{C, csh, make} \lstset{
+%    language=C,tabsize=4,
+%    keepspaces=true,
+%    mathescape=true,
+%    breakindent=22pt,
+%    numbers=left,stepnumber=1,numberstyle=\footnotesize,
+%    basicstyle=\normalsize,
+%    showspaces=false,
+%    flexiblecolumns=true,
+%    breaklines=true, breakautoindent=true,breakindent=1em,
+%    escapeinside={/*@}{@*/}
+%}
+
+%\lhead{Solution of Homework 1}
+%\rhead{Haitao Wang}
+
+\begin{document}
+\baselineskip=14.0pt
+
+\title{CS5050 \textsc{Advanced Algorithms}
+\\{\Large Spring Semester, 2018}
+\\ Assignment 7: Graph Algorithms II
+\\ {\large \textbf{Student:} Tanner Kvarfordt - A02052217}
+\\ {\large {\bf Due Date: 3:00 p.m.}, Tuesday, Apr. 24, 2018 ({\bf at the beginning of CS5050 class})}}
+\date{}
+%\date{\today}
+
+
+\maketitle
+%\theoremstyle{plain}\newtheorem{theorem}{\textbf{Theorem}}
+
+\vspace{-0.6in}
+
+{\bf Note:} In this assignment, we assume all input graphs are represented by adjacency lists.
+
+\begin{enumerate}
+
+\item
+{\bf (20 points)}
+Given a directed graph $G$ of $n$ vertices and $m$ edges, each edge $(u,v)$ has a weight $w(u,v)$, which can be positive, zero, or negative.
+The {\em bottleneck-weight} of any path in $G$ is defined to be the
+{\bf largest} weight of all edges in the path. Let $s$ and $t$ be two vertices of $G$. A {\em minimum bottleneck-weight path} from $s$ to $t$ is a path with the smallest bottleneck-weight among all paths from $s$ to $t$ in $G$.
+
+Modify Dijkstra's algorithm to compute a  minimum bottleneck-weight path from $s$ to $t$. Your algorithm should have the same time complexity as Dijkstra's algorithm.
+
+\textit{Solution:} This algorithm will be very similar to Dijkstra's Algorithm. For all $v \in G$, let $v.b$ represent the smallest bottleneck weight of a path containing $v$. Initially, $v.b$ will be $\infty$, except for $s$, where $s.b = -\infty$. Put all vertices in a set, $Q$, then repeatedly find a vertex $u \in Q$. whose $u.b$ value is the smallest and update $v.b$ for each outgoing edge 
+$(u, v)$. Also, for each $v \in G$, let $v.pre$ indicate the preceding node in the path. The pseudocode is as follows:
+\begin{verbatim}
+Min-Bottleneck(G, s) {
+    for v in G
+        v.b = positive infinity
+    s.b = negative infinity
+    Q: a set of all vertices
+    while Q not empty
+        u = extractMin(Q)
+        for v in adj(u)
+            if u.b < w(u,v)
+                if v.b == positive infinity
+                    v.b = max(w(u,v), u.b)
+                else v.b = min(v.b, max(w(u,v), u.b))
+                v.pre = u
+                decreaseKey(Q, v, v.b)
+}
+\end{verbatim}
+In order to output the min-bottleneck path after the algorithm has run, simply trace back from the desired vertex using its .pre attribute. Once $s$ is reached, reverse the path to get it in proper order from $s$ to destination node. This takes at most $O(n)$ time, so this algorithm has the same complexity as Dijkstra's Algorithm: $O((m+n)\log_2n)$.
+
+\item
+Let $G=(V,E)$ be an undirected connected graph, and each edge $(u,v)$ has a positive weight $w(u,v)>0$. Let $s$ and $t$ be two vertices of $G$. Let $\pi(s,t)$ denote a shortest path from $s$ to $t$ in $G$. Let $T$ be a minimum spanning tree of $G$. Please answer the following questions and explain why you obtain your answers.
+
+\begin{enumerate}
+\item
+Suppose we increase the weight of every edge of $G$ by a positive value $\delta>0$. Then, is $\pi(s,t)$ still a shortest path from $s$ to $t$?
+{\hfill \bf (10 points)}
+
+\textit{Solution:} Not necessarily. Consider a graph with the following paths: $a,b,c,d,e,f$ where each edge in the path has weight $1$, and $a,f$, where the single edge has a weight of $10$. Clearly, the shortest path from $a$ to $f$ is $a,b,c,d,e,f$, with a total weight of $5$. Now imagine we increase the weight of each edge by $\delta=5$. Now the path $a,b,c,d,e,f$ has a total weight of $25$, while the path $a,f$ now has weight of $15$, making it the new shortest path from $a$ to $f$.
+
+\item
+Suppose we increase the weight of every edge of $G$ by a positive value $\delta>0$. Then, is $T$ still a minimum spanning tree of $G$?
+{\hfill \bf (10 points)}
+
+\textit{Solution:} Yes. The reason for part (a) not being true is that there may be several paths from $s$ to $t$, each with a different amount of edges. However, a minimum spanning tree always has $n-1$ edges, and so modifying each edge by any positive value of $\delta$ will maintain the same set of minimum spanning trees.
+
+\end{enumerate}
+
+\item
+{\bf (20 points)}
+Let $G=(V,E)$ be an undirected connected graph of $n$ vertices and $m$ edges. Suppose each edge of $G$ has a color of either {\em blue} or {\em red}. Design an algorithm to
+find a spanning tree $T$ of $G$ such that $T$ has as few red edges as possible. Your algorithm should run in $O((n+m)\log n)$ time. 
+
+\textit{Solution:} Kruskal's algorithm can be easily modified to solve this problem. Let $T$ be the minimum spanning tree. Initially $T=\emptyset$. Sort all edges by color, where blue comes before red. Then, for each edge $(u,v)$ in the sorted order, if $T \cup\{(u,v)\}$ produces no cycles (use union-find to check for cycles), then $T=T\cup \{(u,v)\}$. The pseudocode is as follows:
+\begin{verbatim}
+Kruskal-Mod(G) {
+    W = set of edges in G sorted by color, with blue first // O(mlog(m))
+    T = empty set of edges // spanning tree
+    for each edge (u,v) in W
+        if union(T, (u,v)) produces no cycles // union-find is O(log(n))
+            T = union(T, (u,v))
+    return T
+}
+\end{verbatim}
+This algorithm is just Kruskal's algorithm, but with edges sorted by color, so the complexity is $O(m\log_2n)$, which is better than $O((n+m)\log n)$ since $m < (n+m)$.
+\end{enumerate}
+{\bf Total Points: 60}
+\end{document}
+

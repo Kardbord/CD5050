@@ -1,0 +1,240 @@
+\documentclass[11pt]{article}
+
+%\usepackage{latexsym}
+%\newcommand{\epsfig}{\psfig}
+%\usepackage{tabularx,booktabs,multirow,delarray,array}
+%\usepackage{graphicx,amssymb,amsmath,amssymb,mathrsfs}
+%\usepackage{hyperref}
+%\usepackage[linesnumbered, vlined, ruled]{algorithm2e}
+
+\usepackage{fullpage}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+\begin{document}
+\baselineskip=14.0pt
+\title{CS5050 \textsc{Advanced Algorithms}
+\\{\Large Spring Semester, 2018}
+\\ Assignment 1: Algorithm Analysis
+\\ {\large {\bf Due Date:} {\bf 3:00 p.m.}, Thursday, Jan. 25, 2018 ({\bf at the beginning of CS5050 class})}}
+\date{}
+%\date{\today}
+
+\maketitle
+
+\vspace{-0.5in}
+
+{\bf Note:} If not specified, the base of $\log$ is $2$. This applies to all assignments of this course.
+
+\begin{enumerate}
+
+\item
+{ \bf (10 points)}
+This exercise is to convince you that exponential time algorithms are not quite useful.
+
+Suppose we have an algorithm $A$ whose running time is $O(2^{n})$. For simplicity, we assume that the algorithm $A$ needs $2^n$ instructions to finish for any input size of $n$ (e.g., if $n=5$, $A$ will finish after $2^5=32$ instructions).
+
+According to Wikipedia, as of November 2017, the fastest supercomputer in the world is ``Sunway TaihuLight'' (which is located in Wuxi, China) can perform roughly $1.25 \times 10^{17}$ instructions per second.
+Suppose we run the algorithm $A$ on Sunway TaihuLight. Answer the following questions.
+
+
+\begin{enumerate}
+
+\item
+For the input size $n=100$ (which is a relatively small input), how much time does Sunway TaihuLight need to finish the algorithm? Give the time in terms of {\bf centuries}.
+
+\textit{Answer:} $3215.75$ centuries.
+\[\frac{2^{100}}{1.25 \times 10^{17}} \cdot \frac{1}{60} \cdot \frac{1}{60} \cdot \frac{1}{24} \cdot \frac{1}{365} \cdot \frac{1}{100} = 3215.75\]
+
+\item
+For the input size $n=1000$, how much time does Sunway TaihuLight need to finish the algorithm? Give the time in terms of {\bf centuries}.
+
+\textit{Answer:} $2. 718 185 203 415 188 7 \times 10^{274}$ centuries.
+\[\frac{2^{1000}}{1.25 \times 10^{17}} \cdot \frac{1}{60} \cdot \frac{1}{60} \cdot \frac{1}{24} \cdot \frac{1}{365} \cdot \frac{1}{100} = 2. 718 185 203 415 188 7 \times 10^{274}\]
+
+\end{enumerate}
+
+{\bf Note:} You may assume that a year has exactly 365 days.
+
+\item
+{\bf (20 points)}
+Order the following list of functions in increasing order asymptotically (i.e., from small to large, as we did in class).
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{ccccccc}
+	$\log n$ & $n!$ & $2^{500}$ &  $2^n$ & $\log(\log n)^2$
+					& $2^{\log n}$\\
+$\log^3n$  & $n\log n$   &  $\log_4n$   & $n^3$   &
+$\sqrt{n}$  & $n^2\log^5 n$  \\
+\end{tabular}
+\end{center}
+\vspace{-0.2in}
+\end{table}
+
+\textit{Answer:}  $2^{500}$, $\log_4(n)$, $\log(\log n)^2$, $\log n$, $\log^3n$, $\sqrt{n}$, $2^{\log n}$, $n\log n$, $n^2\log^5 n$, $n^3$, $2^n$, $n!$, 
+
+\item
+{\bf (30 points)}
+For each of the following pairs of functions, indicate
+whether it is one of the three cases: $f(n)=O(g(n))$, $f(n)=\Omega(g(n))$, or $f(n)=\Theta(g(n))$. For each pair, you only need to give your answer and the proof is not required.
+
+
+\begin{enumerate}
+\item $f(n)=7\log n$ and $g(n)=\log n^3 + 56$. \textit{Answer:} $f(n)=\Theta(g(n))$
+\item $f(n)=n^2+n\log^3 n$ and $g(n)=6n^3+\log^2n$. \textit{Answer:} $f(n)=O(g(n))$
+\item $f(n)=5^n$ and $g(n)=n^22^n$. \textit{Answer:} $f(n)=\Omega(g(n))$
+\item $f(n)=n\log^2n$ and $g(n)=\frac{n^2}{\log^3 n}$. \textit{Answer:} $f(n)=O(g(n))$
+\item $f(n)=\sqrt{n}\log n$ and $g(n)=\log^8n+25$. \textit{Answer:} $f(n)=\Omega(g(n))$
+\item $f(n)= n\log n+6n$ and $g(n) = n\log_3 n-8n$. \textit{Answer:} $f(n)=\Theta(g(n))$
+\end{enumerate}
+
+
+
+\item
+{\bf (20 points)}
+This is a ``warm-up'' exercise on algorithm {\bf design} and {\bf analysis}.
+
+The {\em knapsack problem} is defined as follows: Given as input a
+knapsack of size $K$ and $n$ items whose sizes are
+$k_1,k_2,\ldots,k_n$, where $K$ and $k_1,k_2,\ldots,k_n$ are all {\bf positive real}
+numbers, the problem is to find a full ``packing" of the knapsack (i.e., choose a subset
+of the $n$ items such that the total sum of the sizes of the items in
+the chosen subset is {\em exactly} equal to $K$).
+
+It is well known that the knapsack problem is NP-complete, which
+implies that it is very likely that efficient algorithms (i.e., those
+with a polynomial running time) for this problem do not exist. Thus,
+people tend to look for good {\bf approximation algorithms} for
+solving this problem. In this exercise, we relax the constraint of the
+knapsack problem as follows.
+
+We still seek a packing of the knapsack,
+but we need not look for a ``full" packing of the knapsack; instead,
+we look for a packing of the knapsack (i.e., a subset of the $n$ input
+items) such that the total sum of the sizes of the items in the chosen
+subset is {\em at least} $K/2$ (but no more than $K$).
+This is called a {\em factor of $2$
+approximation solution} for the knapsack problem. To simplify the
+problem, we assume that a factor of $2$ approximation solution for the
+knapsack problem always exists, i.e, there always exists a subset of items whose total size is at least $K/2$ and at most $K$.
+
+For example, if the sizes of the $n$ items are $\{9, 24, 14, 5, 8, 17\}$ and $K=20$, then $\{9, 5\}$ is a factor of $2$ approximation solution. Note that such a solution may not be unique. For example, $\{9, 8\}$ is also a solution. 
+%You only need to output one such solution. 
+
+Design a {\bf polynomial time} algorithm for computing a factor of $2$ approximation solution, and analyze the running time of your algorithm (in the big-$O$ notation). Note that although there may be multiple solutions, your algorithm only needs to find one solution. 
+
+If your
+algorithm runs in $O(n)$ time and is correct, then you will get {\bf 5 bonus points}.
+
+\vspace{0.2in}
+
+{\bf Note:} I would like to emphasize the following, which applies to the algorithm design questions in all assignments of this course.
+
+\begin{description}
+\item[1. Algorithm Description]
+You are required to clearly describe the main idea of your algorithm.
+
+\item[2. Pseudocode]
+The pseudocode is optional. However, I usually find pseudocode very helpful to explain the algorithm. So you are strongly encouraged to provide pseudocode for your algorithm as well. (The reason I want to see the algorithm description instead of only the code or pseudocode is that it would be difficult to understand another person's code without any explanation.)
+
+\item[3. Correctness]
+You also need to explain why your algorithm is correct, i.e., why your algorithm can produce a factor of $2$ approximation solution.
+
+\item[4. Time Analysis]
+Please make sure that you analyze the running time of your algorithm.
+\end{description}
+
+\textit{Answer:}
+
+
+\textbf{1. Algorithm Description}
+\begin{itemize}
+\item[a)] Begin by iterating through the list of items and eliminating from consideration any item that is too large to fit into the knapsack. This takes linear time.
+\item[b)] Next, perform a merge sort on the remaining items, sorting them from smallest to largest. This takes 
+$O(n\log n)$ time.
+\item[c)] Now place the largest item in the knapsack, and check to see if the knapsack is at least halfway filled. If so, we're done. If not, proceed with the remaining steps. This step takes constant time.
+\item[d)] Iterate through the remaining items from smallest to largest. For each item, put it in the knapsack. Check if the knapsack is at least halfway filled. If so, we're done. If not, remove the most recent item from the knapsack, and proceed to the next largest item. Repeat this until the knapsack is at least halfway filled or all items are tried. If all items are tried without success, leave only the largest item in the knapsack, and proceed to the next step. Iterating is linear.
+\item[e)] Iterate through the remaining items again from smallest to largest. For each item, place it in the knapsack, and see if the knapsack is at least halfway filled. If not, place the next largest item in the knapsack, and check again. Repeat this until the knapsack is at least halfway filled. Iterating is linear.
+\end{itemize} 
+
+\pagebreak
+
+\textbf{2. Pseudocode}
+\begin{verbatim}
+
+// ----------- Helper functions and definitions ------------------- //
+
+K = knapsack size
+n = number of items
+A[1...n] = array of item sizes
+
+// Ignore/Remove any items that are too large
+// O(n)
+filterTooLarge {
+    for (e in A)
+        if (e > K) remove e from A
+}
+
+mergeSort // Your standard merge sort
+
+// ----------- End helper functions, begin algorithm --------------- //
+
+findPacking {
+    filterTooLarge(A) // O(n)
+    mergeSort(A)      // O(nlogn)
+
+    B = solution subset // A container to hold the size of each item being used
+    // A is sorted and filtered at this point, so A[n] is the largest allowed item
+    B.insert(A[n]) 
+    packed = A[n]
+    if (packed >= round_up(K/2)) return B
+    // O(n)
+    for (i = 0; i < n; ++i) {
+        packed += A[i]
+
+        if (packed >= round_up(K/2))
+            B.insert(A[i])
+            return B
+
+        packed -= A[i]
+    }
+    // O(n)
+    for (i = 0; i < n; ++i) {
+        packed += A[i]
+        B.insert(A[i])
+
+        if (packed >= round_up(K/2) return B
+    }
+}
+
+\end{verbatim}
+
+\textbf{3. Correctness} \\
+\textbf{Note:} These letters correspond to the letters in the Algorithm Description section.
+\begin{itemize}
+\item[a)] Eliminating items that are too large to fit into the knapsack is a no-brainer for making the algorithm simpler.
+\item[b)] Sorting the remaining items provides valuable information about the sizes of those remaining items.
+\item[c)] Our goal is to fill the knapsack at least halfway. Placing the largest-fitting item into the knapsack is the largest step we can safely take to get us closer to this goal.
+\item[d)] It is possible that the largest item plus one of the additional remaining items will fill the knapsack at least halfway. Each must be tried to ensure overflow does not occur, and to find a possible packing.
+\item[e)] Consider the following:
+	\begin{itemize}
+	\item[1)] We are guaranteed a solution.
+    \item[2)] The largest-fitting item did not fill the knapsack at least halfway.
+    \item[3)] The largest-fitting item in combination with each of the respective other items did not fill the knapsack halfway.
+	\end{itemize}
+    Therefore, if we add the smallest item, then the next smallest, then the next smallest, etc., we are guaranteed to eventually fill the knapsack at least halfway without overflowing.
+\end{itemize}
+
+\textbf{4. Time Analysis}\\
+As outlined in the Algorithm Description section, the complexity of this algorithm is at worst as follows:
+\[n + n\log n + 1 + n + n\]
+Therefore, the running time of this algorithm is $O(n\log n)$.
+
+\end{enumerate}
+
+
+\vspace{0.3in}
+{\bf Total Points: 80} (not including the five bonus points)
+
+\end{document} 

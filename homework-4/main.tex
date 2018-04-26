@@ -1,0 +1,234 @@
+% latex first.tex
+% latex first.tex
+% xdvi first.dvi
+% dvips -o first.ps first.dvi
+% gv first.ps
+% lpr first.ps
+% pdflatex first.tex
+% acroread first.pdf
+% dvipdf first.dvi first.pdf
+% xpdf first.pdf
+\documentclass[11pt]{article}
+
+\usepackage{latexsym}
+%\newcommand{\epsfig}{\psfig}
+%\usepackage{tabularx,booktabs,multirow,delarray,array}
+%\usepackage{graphicx,amssymb,amsmath,amssymb,mathrsfs}
+%\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[linesnumbered, vlined, ruled]{algorithm2e}
+
+
+
+
+%\usepackage[T1]{fontenc}
+
+
+%\aboverulesep=0pt
+%\belowrulesep=0pt
+
+%\marginparwidth=0in
+%\marginparsep=0in
+\oddsidemargin=0.0in
+\evensidemargin=0.0in
+\headheight=0.0in
+%\headsep=0in
+\topmargin=-0.40in %0.35
+\textheight=9.0in %9.1in
+\textwidth=6.5in   %6.55in
+
+%\usepackage{fullpage}
+\usepackage[in]{fullpage}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{mathtools}
+
+%\setlength{\headheight}{0.2in}
+%\setlength{\headsep}{0.2in}
+%\setlength{\voffset}{-0.2in}
+
+\def\report{{\em Report-Max}$(1)$}
+\def\reportk{{\em Report-Max}$(k)$}
+
+%\pagestyle{plain}
+
+%\usepackage{listings}
+%\lstloadlanguages{C, csh, make} \lstset{
+%    language=C,tabsize=4,
+%    keepspaces=true,
+%    mathescape=true,
+%    breakindent=22pt,
+%    numbers=left,stepnumber=1,numberstyle=\footnotesize,
+%    basicstyle=\normalsize,
+%    showspaces=false,
+%    flexiblecolumns=true,
+%    breaklines=true, breakautoindent=true,breakindent=1em,
+%    escapeinside={/*@}{@*/}
+%}
+
+%\lhead{Solution of Homework 1}
+%\rhead{Haitao Wang}
+
+\begin{document}
+\baselineskip=14.0pt
+
+\title{CS5050 \textsc{Advanced Algorithms}
+\\{\large Spring Semester, 2018}
+\\ Assignment 4: Data Structure Design
+\\ {\large \textbf{Student:} Tanner Kvarfordt - A02052217}
+\\ {\large {\bf Due Date: 3:00 p.m.}, Tuesday, Mar. 20, 2018 ({\bf at the beginning of CS5050 class})}}
+\date{}
+%\date{\today}
+
+
+\maketitle
+%\theoremstyle{plain}\newtheorem{theorem}{\textbf{Theorem}}
+
+\vspace{-0.6in}
+
+
+\begin{enumerate}
+\item
+{\bf (20 points)}
+Suppose we have a min-heap with $n$ distinct keys that are stored in an array $A[1\ldots n]$ (a min-heap is one that stores the smallest key at its root). Given a value $x$ and an integer $k$ with $1\leq k\leq n$, design an algorithm to determine whether the $k$-th smallest key in the heap is smaller than $x$ (so your answer should be ``yes'' or ``no''). The running time of your algorithm should be $O(k)$, independent of the size of the heap.
+
+\vspace{-0.15in}
+\paragraph{Remark.} If we were to find the $k$-th smallest key of the heap, denoted by $y$, then the best way would be to perform $k$ times {\em deleteMin} operations, which would take $O(k\log n)$ time (or using the selection algorithm, which would take $O(n)$ time). Our above problem, however, is actually a {\em decision problem}. Namely, you only need to decide whether $y$ is smaller than $x$, and you do not have to know what the exact value of $y$ is. Hence, the problem is easier and we are able to solve it in a faster way, i.e., $O(k)$ time.
+
+\textit{Solution:} The premise behind this algorithm is to trace roughly $k$ elements of the heap and count the number of elements smaller than $x$. If $k$ elements that are smaller than $x$ are found, then the algorithm returns true as we know that the $k$-th smallest element is certainly smaller than $x$. The key to this algorithm is to only check a node's children if that node is itself smaller than $x$. Hence, we will examine $k+c$ nodes at a maximum, where $c$ accounts for the checking of nodes that turn out to be larger than $x$. $c$ is definitively smaller than $k$, hence $k+c$ represents $O(k)$ time.
+
+\item
+{\bf (20 points)}
+Suppose you are given a binary search tree $T$ of $n$ nodes (as discussed in class, each node $v$ has $v.left$, $v.right$, and $v.key$). We assume that no two keys in $T$ are equal. Given a value $x$, the {\em rank} operation $rank(x)$ is to return the {\em rank} of $x$ in $T$, which is defined to be one plus the number of keys of $T$ smaller than $x$. For example, if $T$ has 3 keys smaller than $x$, then $rank(x)=4$. Note that $x$ may or may not be a key in $T$. Refer to Figure~\ref{fig:bstsucc} for more examples.
+
+
+%\begin{figure}[h]
+%\begin{minipage}[t]{\linewidth}
+%\begin{center}
+%\includegraphics[totalheight=1.7in]{bstsucc.eps}
+%\caption{\footnotesize
+%$rank(16)=3$, $rank(21)=6$, $rank(25)=7$, $rank(26)=8$.
+%}
+%\label{fig:bstsucc}
+%\end{center}
+%\end{minipage}
+%\vspace*{-0.10in}
+%\end{figure}
+
+Let $h$ be the height of $T$. We know that $T$ can support the ordinary {\em search, insert}, and {\em delete} operations, each in $O(h)$ time. You are asked to augment $T$, such that the {\em rank} operation, as well as the normal {\em search, insert}, and {\em delete} operations, all take $O(h)$ time each.
+
+Please explain clearly how you augment $T$ and give your algorithm for performing the {\em rank} operations (please give the pseudocode). You do not need to give the details for other operations (search, insert, delete), but only need to briefly explain why they still take $O(h)$ time after you augment $T$.
+
+\textit{Solution:} Augment $T$ by having each node track its $size$, where $v.size = v.left.size + v.right.size + 1$, unless $v$ is a leaf node, in which case $v.size = 1$. This does not effect the $O(h)$ time complexity of search, insert, or delete due to the fact that the $size$ attribute depends only on $v$, $v.left$, and $v.right$. The theorem discussed in class states that this means time complexity for other operations remains unaffected. The pseudocode to determine the rank of a key, $x$, is as follows:
+\begin{verbatim}
+// v is a node in a T, initially T.root
+// x is the key whose rank is being calculated
+// r is the current calculation of rank, initially 0
+rank(v, x, r) {
+    if v == NULL return r
+    if v.key > x
+        return rank(v.left, x, r)
+    if v.key < x
+        return rank(v.right, x, r + v.left.size + 1)
+    if v.key == x
+        return r + v.left.size + 1
+}
+\end{verbatim}
+This algorithm essentially follows a path directly from the root of a BST to a leaf node, meaning it examines at most $h$ tree nodes. Hence, this algorithm is $O(h)$.
+
+\item
+{\bf (20 points)}
+This problem is concerned with {\bf range queries} (we have discussed a similar problem in class) on a binary search tree $T$ whose keys are real numbers (no two keys in $T$ are equal). Let $h$ denote the height of $T$. The range query is a generalization of the ordinary {\em search} operation. The {\bf range} of a range query on $T$ is defined by a pair $[x_l,x_r]$, where $x_l$ and $x_r$ are real numbers and $x_l\leq x_r$. Note that $x_l$ and $x_r$ may not be the keys in $T$.
+
+You already know that $T$ can support the ordinary {\em search, insert}, and {\em delete} operations, each in $O(h)$ time. You are asked to design an algorithm to efficiently perform the {\em range queries}. That is, in each range query, you are given a range $[x_l,x_r]$, and your algorithm should report all keys $x$ stored in $T$ such that $x_l\leq x\leq x_r$. Your algorithm should run in $O(h+k)$ time, where $k$ is the number of keys of $T$ in the range $[x_l,x_r]$. In addition, it is required that all keys in $[x_l,x_r]$ be reported in a {\em sorted order}. Please give the pseudocode for your algorithm.
+
+\vspace{-0.13in}
+\paragraph{Remark.} Such an algorithm of $O(h+k)$ time is an {\em output-sensitive} algorithm because the running time (i.e., $O(h+k)$) is also a function of the output size $k$.
+As an application of the range queries, suppose the keys of $T$ are the student scores of an exam. A range query like $[70,80]$ would report all scores in the range in sorted order.
+
+\textit{Solution:} The premise behind this algorithm is to visit each node of the tree that falls in the range $[x_l,x_r]$, hence the running time will be $O(k)$. The key of each node in the range will be stored in a dynamically-sized list structure in such a way that the list is in sorted order. The pseudocode for the algorithm is as follows:
+\newpage
+\begin{verbatim}
+nodesInRange(T, xl, xr) {
+    u = leastCommonAncestor(T, xl, xr)
+    if u == NULL return an empty list
+    keys = a dynamically-sized array structure of pointers to located keys
+    keys = checkLeft(u.left, xl)
+    keys.append(u.key)
+    keys.append(checkRight(u.right, xr))
+    return keys
+}
+checkLeft(v, xl) {
+    if v == NULL return an empty list
+    keys = a dynamically-sized array structure of pointers to located keys
+    if v.key == xl
+        keys.append(v.key)
+        return keys.append(checkLeft(v.right, xl)
+    if v.key > xl
+        keys = checkLeft(v.left, xl)
+        keys.append(v.key)
+        keys.append(checkLeft(v.right, xl)
+        return keys
+    if v.key < xl
+        keys = checkLeft(v.right, xl)
+        return keys
+}
+
+checkRight(v, xr) {
+    if (v == NULL) return an empty list
+    keys = a dynamically-sized array structure of pointers to located keys
+    if v.key == xr
+        keys.append(checkRight(v.left, xr))
+        keys.append(v.key)
+        return keys
+    if v.key < xr
+        keys.append(checkRight(v.left, xr))
+        keys.append(v.key)
+        keys.append(checkRight(v.right, xr))
+        return keys
+    if v.key > xr
+        keys = checkRight(v.left, xr)
+        return keys
+}
+\end{verbatim}
+This algorithm visits $k + c$ nodes of $T$, where $c$ is the number of nodes that meet the base case in the checkLeft and checkRight functions. This algorithm is therefore $O(k + c)$. Note that in the worst case, when $[x_l,x_r]$ encompasses every node of $T$, the algorithm is then $O(k)$ where $k=n$.
+
+\item
+{\bf (20 points)}
+Consider one more operation on the above binary search tree $T$ in Problem~3: {\em range-sum}$(x_l,x_r)$. Given any range $[x_l,x_r]$ with $x_l\leq x_r$,  the operation {\em range-sum}$(x_l,x_r)$ reports the {\em sum} of the keys in $T$ that are in the range $[x_l,x_r]$.
+
+You are asked to augment the binary search tree $T$, such that the {\em range-sum}$(x_l,x_r)$ operations, as well as the normal {\em search, insert}, and {\em delete} operations, all take $O(h)$ time each, where $h$ is the height of $T$.
+
+You must present: (1) the design of your data structure (i.e., how you augment $T$); (2) the algorithm for implementing the {\em range-sum}$(x_l,x_r)$ operation (please give the pseudocode).
+
+\textit{Solution:} Augment $T$ by having each node track the sum of its key and each key beneath it. That is, each node has a new data member $v.sum = v.left.sum + v.right.sum + v.key$, unless $v$ is a leaf node, in which case $v.sum = v.key$. This augmentation does not affect the $O(h)$ time complexity of the search, insert, or delete operations due to the theorem presented in class. The theorem states that if an augmentation depends only on $v$, $v.left$, and $v.right$, then the $O(h)$ time complexity of other operations of the BST is not affected. The pseudocode for range-sum is then as follows:
+\begin{verbatim}
+rangeSum(T, xl, xr) {
+    u = lowestCommonAncestor(T, xl, xr)
+    if u == null return 0
+    sum = u.key
+    v = u.left
+    while (v != NULL) {
+        if v.key >= xl
+            sum += v.key + v.right.sum
+            if v.key == xl break
+            else v = v.left
+        if v.key < xl
+            v = v.right
+    }
+    v = u.right
+    while (v != NULL) {
+        if v.key <= xr
+            sum += v.key + v.left.sum
+            if v.key == xr break
+            else v = v.right
+        if v.key < xr
+            v = v.left
+    }
+    return sum
+}
+\end{verbatim}
+At worst, this algorithm follows the tree from root to a leaf node. Thus this algorithm is $O(h)$.
+\end{enumerate}
+{\bf Total Points: 80}
+\end{document}
+
